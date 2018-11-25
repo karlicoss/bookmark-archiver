@@ -62,6 +62,7 @@ def validate_links(links):
         
         latest = link['latest']
         if not link['latest'].get('wget'):
+            # import ipdb; ipdb.set_trace() 
             link['latest']['wget'] = wget_output_path(link)
 
         if not link['latest'].get('pdf'):
@@ -106,17 +107,23 @@ def uniquefied_links(sorted_links):
     without_www = lambda url: url.replace('://www.', '://', 1)
     without_trailing_slash = lambda url: url[:-1] if url[-1] == '/' else url.replace('/?', '?')
 
+    # TODO speed up here? on 3000 urls slowdown is considerable..
     for link in sorted_links:
         fuzzy_url = without_www(without_trailing_slash(lower(link['url'])))
+        # if link['url'].lower() != fuzzy_url:
+        #     print('before: ' + link['url'])
+        #     print('after : ' + fuzzy_url)
         if fuzzy_url in unique_urls:
             # merge with any other links that share the same url
             link = merge_links(unique_urls[fuzzy_url], link)
         unique_urls[fuzzy_url] = link
 
+    # TODO timestamp is a bit weird...
     unique_timestamps = OrderedDict()
     for link in unique_urls.values():
         link['timestamp'] = lowest_uniq_timestamp(unique_timestamps, link['timestamp'])
         unique_timestamps[link['timestamp']] = link
+        # TODO hmm. maybe that??
 
     return unique_timestamps.values()
 
@@ -141,6 +148,9 @@ def lowest_uniq_timestamp(used_timestamps, timestamp):
 
     timestamp = timestamp.split('.')[0]
     nonce = 0
+
+    # TODO err. archive clearly got .0 entries, and the code admits it as well.
+    # can it be bad?
 
     # first try 152323423 before 152323423.0
     if timestamp not in used_timestamps:

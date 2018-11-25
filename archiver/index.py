@@ -39,7 +39,8 @@ def write_links_index(out_dir, links):
 
 def write_json_links_index(out_dir, links):
     """write the json link index to a given path"""
-
+    # from IPython import embed; embed(); import ipdb; ipdb.set_trace()
+    # import ipdb; ipdb.set_trace()
     path = os.path.join(out_dir, 'index.json')
 
     index_json = {

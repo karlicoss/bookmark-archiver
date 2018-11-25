@@ -46,6 +46,7 @@ _RESULTS_TOTALS = {   # globals are bad, mmkay
 
 def archive_links(archive_path, links, source=None, resume=None):
     check_dependencies()
+    # raise RuntimeError
 
     to_archive = Peekable(links_after_timestamp(links, resume))
     idx, link = 0, to_archive.peek(0)
@@ -195,10 +196,11 @@ def fetch_wget(link_dir, link, requisites=FETCH_WGET_REQUISITES, timeout=TIMEOUT
 
     CMD = [
         # WGET CLI Docs: https://www.gnu.org/software/wget/manual/wget.html
-        *'wget -N -E -np -x -H -k -K -S --restrict-file-names=unix'.split(' '),
-        *(('-p',) if FETCH_WGET_REQUISITES else ()),
-        *(('--user-agent={}'.format(WGET_USER_AGENT),) if WGET_USER_AGENT else ()),
-        *((() if CHECK_SSL_VALIDITY else ('--no-check-certificate',))),
+        # *'wget -N -E -np -x -H -k -K -S --restrict-file-names=unix'.split(' '),
+        # *(('-p',) if FETCH_WGET_REQUISITES else ()),
+        # *(('--user-agent={}'.format(WGET_USER_AGENT),) if WGET_USER_AGENT else ()),
+        # *((() if CHECK_SSL_VALIDITY else ('--no-check-certificate',))),
+        'echo',
         link['url'],
     ]
     end = progress(timeout, prefix='      ')

@@ -57,6 +57,7 @@ def merge_links(archive_path=OUTPUT_DIR, import_path=None, only_new=False):
         raw_links = parse_links(import_path)
         all_links = validate_links(raw_links)
 
+    # import ipdb; ipdb.set_trace()
     # merge existing links in archive_path and new links
     existing_links = []
     if archive_path:
@@ -127,6 +128,8 @@ def update_archive(archive_path, links, source=None, resume=None, append=True):
 
 
 if __name__ == '__main__':
+    import sys, ipdb, traceback; exec("def info(type, value, tb):\n    traceback.print_exception(type, value, tb)\n    ipdb.pm()"); sys.excepthook = info # type: ignore
+
     argc = len(sys.argv)
 
     if set(sys.argv).intersection(('-h', '--help', 'help')):
