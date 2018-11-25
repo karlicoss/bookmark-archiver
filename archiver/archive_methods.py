@@ -84,7 +84,26 @@ def archive_link(link_dir, link, overwrite=True):
         }
     else:
         os.makedirs(link_dir)
-    
+
+    # TODO check link index here?...
+    # TODO if error, exit immediately
+    # import ipdb; ipdb.set_trace()
+    def seen_link():
+        hh = link.get('history', None)
+        if hh is None:
+            return False
+        wh = hh.get('wget', None)
+        if wh is None:
+            return False
+        return len(wh) > 0
+
+    if seen_link():
+        print(f"SKIPPING {link['base_url']}, we've seen it already")
+            # TODO write link index?...
+        return link
+        # TODO continue...
+        # last = wget_history[-1]
+
     log_link_archive(link_dir, link, update_existing)
 
     if FETCH_WGET:
@@ -349,7 +368,8 @@ def archive_dot_org(link_dir, link, timeout=TIMEOUT):
 
     path = os.path.join(link_dir, 'archive.org.txt')
     if os.path.exists(path):
-        archive_org_url = open(path, 'r').read().strip()
+        with open(path, 'r') as f:
+            archive_org_url = f.read().strip()
         return {'output': archive_org_url, 'status': 'skipped'}
 
     submit_url = 'https://web.archive.org/save/{}'.format(link['url'])
@@ -406,8 +426,8 @@ def archive_dot_org(link_dir, link, timeout=TIMEOUT):
 def fetch_favicon(link_dir, link, timeout=TIMEOUT):
     """download site favicon from google's favicon api"""
 
-    if os.path.exists(os.path.join(link_dir, 'favicon.ico')):
-        return {'output': 'favicon.ico', 'status': 'skipped'}
+    # if os.path.exists(os.path.join(link_dir, 'favicon.ico')):
+    return {'output': 'favicon.ico', 'status': 'skipped'}
 
     CMD = ['curl', 'https://www.google.com/s2/favicons?domain={domain}'.format(**link)]
     fout = open('{}/favicon.ico'.format(link_dir), 'w')
